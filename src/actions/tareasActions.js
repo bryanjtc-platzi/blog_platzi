@@ -5,7 +5,9 @@ import {
   ERROR,
   CAMBIO_USUARIO_ID,
   CAMBIO_TITULO,
-  AGREGADA,
+  GUARDAR,
+  ACTUALIZAR,
+  LIMPIAR,
 } from "../types/tareasTypes";
 
 export const traerTodas = () => async (dispatch) => {
@@ -60,7 +62,7 @@ export const agregar = (nueva_tarea) => async (dispatch) => {
   try {
     await axios.post("https://jsonplaceholder.typicode.com/todos", nueva_tarea);
     dispatch({
-      type: AGREGADA,
+      type: GUARDAR,
     });
   } catch (error) {
     console.log(error.message);
@@ -71,6 +73,68 @@ export const agregar = (nueva_tarea) => async (dispatch) => {
   }
 };
 
-export const editar = (tarea_editada) => (dispatch) => {
-  console.log(tarea_editada);
+export const editar = (tarea_editada) => async (dispatch) => {
+  dispatch({
+    type: CARGANDO,
+  });
+  try {
+    await axios.put(
+      `https://jsonplaceholder.typicode.com/todos/${tarea_editada.id}`,
+      tarea_editada
+    );
+    dispatch({
+      type: GUARDAR,
+    });
+  } catch (error) {
+    console.log(error.message);
+    dispatch({
+      type: ERROR,
+      payload: ["Intente m", <span>&#225;</span>, "as tarde."],
+    });
+  }
+};
+
+export const cambioCheck = (usu_id, tar_id) => (dispatch, getState) => {
+  const { tareas } = getState().tareasReducer;
+  const seleccionada = tareas[usu_id][tar_id];
+  const actualizadas = {
+    ...tareas,
+  };
+  actualizadas[usu_id] = {
+    ...tareas[usu_id],
+  };
+  actualizadas[usu_id][tar_id] = {
+    ...tareas[usu_id][tar_id],
+    completed: !seleccionada.completed,
+  };
+
+  dispatch({
+    type: ACTUALIZAR,
+    payload: actualizadas,
+  });
+};
+
+export const eliminar = (tar_id) => async (dispatch) => {
+  dispatch({
+    type: CARGANDO,
+  });
+  try {
+    await axios.delete(`https://jsonplaceholder.typicode.com/todos/${tar_id}`);
+    dispatch({
+      type: TRAER_TODAS,
+      payload: {},
+    });
+  } catch (error) {
+    console.log(error.message);
+    dispatch({
+      type: ERROR,
+      payload: "Servicio no disponible.",
+    });
+  }
+};
+
+export const limpiarForma = () => (dispatch) => {
+  dispatch({
+    type: LIMPIAR,
+  });
 };

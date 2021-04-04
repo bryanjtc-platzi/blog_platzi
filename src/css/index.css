@@ -34,3 +34,21 @@ body {
 .rojo {
   color: red;
 }
+
+.pub_titulo {
+  border-top: 1px solid black;
+}
+
+li {
+  margin: 15px 0 15px 0;
+}
+
+.contenedor-tareas {
+  font-size: 20px;
+  margin-left: 50px;
+  margin-right: 70px;
+}
+
+.m_left{
+  margin-left:20px;
+}

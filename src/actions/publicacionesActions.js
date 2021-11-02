@@ -21,7 +21,7 @@ export const traerPorUsuario = (key) => async (dispatch, getState) => {
   const usuario_id = usuarios[key].id;
   try {
     const respuesta = await axios.get(
-      `http://jsonplaceholder.typicode.com/posts?userId=${usuario_id}`
+      `https://jsonplaceholder.typicode.com/posts?userId=${usuario_id}`
     );
     const nuevas = respuesta.data.map((publicacion) => ({
       ...publicacion,

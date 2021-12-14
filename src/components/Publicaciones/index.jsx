@@ -1,5 +1,6 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { useParams, useLocation, useHistory } from "react-router-dom";
 import Spinner from "../General/Spinner";
 import Fatal from "../General/Fatal";
 import Comentarios from "./Comentarios";
@@ -13,33 +14,34 @@ const {
   traerComentarios,
 } = publicacionesActions;
 
-class Publicaciones extends Component {
-  async componentDidMount() {
+const Publicaciones = (props) => {
+  const params = useParams();
+
+  useEffect(() => {
     const {
       usuariosTraerTodos,
       publicacionesTraerPorUsuario,
-      match: {
-        params: { key },
-      },
-    } = this.props;
+    } = props;
 
-    if (!this.props.usuariosReducer.usuarios.length) {
-      await usuariosTraerTodos();
+    const key = params.key
+
+    if (!props.usuariosReducer.usuarios.length) {
+      usuariosTraerTodos();
     }
-    if (this.props.usuariosReducer.error) {
+    if (props.usuariosReducer.error) {
       return;
     }
-    if (!("publicaciones_key" in this.props.usuariosReducer.usuarios[key]))
-      await publicacionesTraerPorUsuario(key);
-  }
+    if (!("publicaciones_key" in props.usuariosReducer.usuarios[key]))
+      publicacionesTraerPorUsuario(key);
+  }, []);
 
-  ponerUsuario = () => {
+  const ponerUsuario = () => {
     const {
       usuariosReducer,
       match: {
         params: { key },
       },
-    } = this.props;
+    } = props;
     if (usuariosReducer.error) {
       return <Fatal mensaje={usuariosReducer.error} />;
     }
@@ -49,7 +51,7 @@ class Publicaciones extends Component {
     return <h1>Publicaciones de {nombre}</h1>;
   };
 
-  ponerPublicaciones = () => {
+  const ponerPublicaciones = () => {
     const {
       usuariosReducer,
       usuariosReducer: { usuarios },
@@ -58,7 +60,7 @@ class Publicaciones extends Component {
       match: {
         params: { key },
       },
-    } = this.props;
+    } = props;
     if (!usuarios.length) return;
     if (usuariosReducer.error) return;
     if (publicacionesReducer.cargando) return <Spinner />;
@@ -67,19 +69,16 @@ class Publicaciones extends Component {
     if (!publicaciones.length) return;
     if (!("publicaciones_key" in usuarios[key])) return;
     const { publicaciones_key } = usuarios[key];
-    return this.mostrarInfo(
-      publicaciones[publicaciones_key],
-      publicaciones_key
-    );
+    return mostrarInfo(publicaciones[publicaciones_key], publicaciones_key);
   };
 
-  mostrarInfo = (publicaciones, pub_key) =>
+  const mostrarInfo = (publicaciones, pub_key) =>
     publicaciones.map((publicacion, com_key) => (
       <div
         className="pub_titulo"
         key={publicacion.id}
         onClick={() =>
-          this.mostrarComentarios(pub_key, com_key, publicacion.comentarios)
+          mostrarComentarios(pub_key, com_key, publicacion.comentarios)
         }
       >
         <h2>{publicacion.title}</h2>
@@ -92,21 +91,20 @@ class Publicaciones extends Component {
       </div>
     ));
 
-  mostrarComentarios = (pub_key, com_key, comentarios) => {
-    this.props.abrirCerrar(pub_key, com_key);
+  const mostrarComentarios = (pub_key, com_key, comentarios) => {
+    props.abrirCerrar(pub_key, com_key);
     if (!comentarios.length) {
-      this.props.traerComentarios(pub_key, com_key);
+      props.traerComentarios(pub_key, com_key);
     }
   };
-  render() {
-    return (
-      <div>
-        {this.ponerUsuario()}
-        {this.ponerPublicaciones()}
-      </div>
-    );
-  }
-}
+
+  return (
+    <div>
+      {ponerUsuario()}
+      {ponerPublicaciones()}
+    </div>
+  );
+};
 
 const mapStateToProps = ({ usuariosReducer, publicacionesReducer }) => {
   return { usuariosReducer, publicacionesReducer };

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import * as tareasActions from "../../actions/tareasActions";
 import Spinner from "../General/Spinner";
 import Fatal from "../General/Fatal";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 class Guardar extends Component {
   componentDidMount() {
@@ -78,7 +78,7 @@ class Guardar extends Component {
   render() {
     return (
       <div>
-        {this.props.regresar ? <Redirect to="/tareas" /> : ""}
+        {this.props.regresar ? <Navigate to="/tareas" /> : ""}
         <h1>Guardar Tarea</h1>
         Usuario id:
         <input

@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Menu from "./Menu";
-import Usuarios from "./Usuarios/index.js";
+import Usuarios from "./Usuarios/index.jsx";
 import Publicaciones from "./Publicaciones";
 import Tareas from "./Tareas";
 import TareasGuardar from "./Tareas/Guardar";

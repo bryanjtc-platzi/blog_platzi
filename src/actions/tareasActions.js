@@ -36,7 +36,7 @@ export const traerTodas = () => async (dispatch) => {
     console.log("Error: ", error.message);
     dispatch({
       type: ERROR,
-      payload: ["Informaci", <span>&#243;</span>, "de tareas, no disponible."],
+      payload: "Informacion de tareas, no disponible.",
     });
   }
 };
@@ -68,7 +68,7 @@ export const agregar = (nueva_tarea) => async (dispatch) => {
     console.log(error.message);
     dispatch({
       type: ERROR,
-      payload: ["Intente m", <span>&#225;</span>, "as tarde."],
+      payload: "Intente mas tarde.",
     });
   }
 };
@@ -89,7 +89,7 @@ export const editar = (tarea_editada) => async (dispatch) => {
     console.log(error.message);
     dispatch({
       type: ERROR,
-      payload: ["Intente m", <span>&#225;</span>, "as tarde."],
+      payload: "Intente mas tarde.",
     });
   }
 };

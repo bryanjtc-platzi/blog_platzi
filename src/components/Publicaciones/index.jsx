@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { useParams, useLocation, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Spinner from "../General/Spinner";
 import Fatal from "../General/Fatal";
 import Comentarios from "./Comentarios";
@@ -16,14 +16,13 @@ const {
 
 const Publicaciones = (props) => {
   const params = useParams();
+  const key = params.key;
 
   useEffect(() => {
     const {
       usuariosTraerTodos,
       publicacionesTraerPorUsuario,
     } = props;
-
-    const key = params.key
 
     if (!props.usuariosReducer.usuarios.length) {
       usuariosTraerTodos();
@@ -33,14 +32,11 @@ const Publicaciones = (props) => {
     }
     if (!("publicaciones_key" in props.usuariosReducer.usuarios[key]))
       publicacionesTraerPorUsuario(key);
-  }, []);
+  }, [params]);
 
   const ponerUsuario = () => {
     const {
       usuariosReducer,
-      match: {
-        params: { key },
-      },
     } = props;
     if (usuariosReducer.error) {
       return <Fatal mensaje={usuariosReducer.error} />;
@@ -57,9 +53,6 @@ const Publicaciones = (props) => {
       usuariosReducer: { usuarios },
       publicacionesReducer,
       publicacionesReducer: { publicaciones },
-      match: {
-        params: { key },
-      },
     } = props;
     if (!usuarios.length) return;
     if (usuariosReducer.error) return;

@@ -1,21 +1,17 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as tareasActions from "../../actions/tareasActions";
 import Spinner from "../General/Spinner";
 import Fatal from "../General/Fatal";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
-class Guardar extends Component {
-  componentDidMount() {
-    const {
-      match: {
-        params: { usu_id, tar_id },
-      },
-      tareas,
-      cambioUsuarioId,
-      cambioTitulo,
-      limpiarForma,
-    } = this.props;
+const Guardar = (props) => {
+  const params = useParams();
+  const usu_id = params.usu_id;
+  const tar_id = params.tar_id;
+
+  useEffect(() => {
+    const { tareas, cambioUsuarioId, cambioTitulo, limpiarForma } = props;
 
     if (usu_id && tar_id) {
       const tarea = tareas[usu_id][tar_id];
@@ -24,26 +20,23 @@ class Guardar extends Component {
     } else {
       limpiarForma();
     }
-  }
-  cambioUsuarioId = (event) => {
-    this.props.cambioUsuarioId(event.target.value);
+  }, [params]);
+  const cambioUsuarioId = (event) => {
+    props.cambioUsuarioId(event.target.value);
   };
 
-  cambioTitulo = (event) => {
-    this.props.cambioTitulo(event.target.value);
+  const cambioTitulo = (event) => {
+    props.cambioTitulo(event.target.value);
   };
 
-  guardar = () => {
+  const guardar = () => {
     const {
-      match: {
-        params: { usu_id, tar_id },
-      },
       tareas,
       usuario_id,
       titulo,
       agregar,
       editar,
-    } = this.props;
+    } = props;
 
     const nueva_tarea = {
       userID: usuario_id,
@@ -62,44 +55,42 @@ class Guardar extends Component {
     } else agregar(nueva_tarea);
   };
 
-  deshabilitar = () => {
-    const { usuario_id, titulo, cargando } = this.props;
+  const deshabilitar = () => {
+    const { usuario_id, titulo, cargando } = props;
     if (cargando) return true;
     if (!usuario_id || !titulo) return true;
     return false;
   };
 
-  mostrarAccion = () => {
-    const { error, cargando } = this.props;
+  const mostrarAccion = () => {
+    const { error, cargando } = props;
     if (cargando) return <Spinner />;
     if (error) return <Fatal mensaje={error} />;
   };
 
-  render() {
-    return (
-      <div>
-        {this.props.regresar ? <Navigate to="/tareas" /> : ""}
-        <h1>Guardar Tarea</h1>
-        Usuario id:
-        <input
-          type="number"
-          value={this.props.usuario_id}
-          onChange={this.cambioUsuarioId}
-        />
-        <br />
-        <br />
-        Titulo:
-        <input value={this.props.titulo} onChange={this.cambioTitulo} />
-        <br />
-        <br />
-        <button onClick={this.guardar} disabled={this.deshabilitar()}>
-          Guardar
-        </button>
-        {this.mostrarAccion()}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      {props.regresar ? <Navigate to="/tareas" /> : ""}
+      <h1>Guardar Tarea</h1>
+      Usuario id:
+      <input
+        type="number"
+        value={props.usuario_id}
+        onChange={cambioUsuarioId}
+      />
+      <br />
+      <br />
+      Titulo:
+      <input value={props.titulo} onChange={cambioTitulo} />
+      <br />
+      <br />
+      <button onClick={guardar} disabled={deshabilitar()}>
+        Guardar
+      </button>
+      {mostrarAccion()}
+    </div>
+  );
+};
 
 const mapStateToProps = ({ tareasReducer }) => tareasReducer;
 export default connect(mapStateToProps, tareasActions)(Guardar);

@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Menu from "./Menu";
 import Usuarios from "./Usuarios/index.jsx";
 import Publicaciones from "./Publicaciones";
@@ -10,17 +10,17 @@ const App = () => (
   <BrowserRouter>
     <Menu />
     <div className="margen">
-      <Switch>
-        <Route exact path="/" component={Usuarios} />
-        <Route exact path="/tareas" component={Tareas} />
-        <Route exact path="/publicaciones/:key" component={Publicaciones} />
-        <Route exact path="/tareas/guardar" component={TareasGuardar} />
+      <Routes>
+        <Route exact path="/" element={<Usuarios/>} />
+        <Route exact path="/tareas" element={<Tareas/>} />
+        <Route exact path="/publicaciones/:key" element={<Publicaciones/>} />
+        <Route exact path="/tareas/guardar" element={<TareasGuardar/>} />
         <Route
           exact
           path="/tareas/guardar/:usu_id/:tar_id"
-          component={TareasGuardar}
+          element={<TareasGuardar/>}
         />
-      </Switch>
+      </Routes>
     </div>
   </BrowserRouter>
 );

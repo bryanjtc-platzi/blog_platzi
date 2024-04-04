@@ -1,22 +1,27 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import "./css/index.css";
 import "./css/iconos.css";
 import App from "./components/App";
-import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import reducers from "./reducers";
-import reduxThong from "redux-thunk";
+import { configureStore } from "@reduxjs/toolkit";
+import usuariosReducer from "./slices/usuariosSlices";
+import publicacionesReducer from "./slices/publicacionesSlices";
+import tareasReducer from "./slices/tareasSlices";
 
-const store = createStore(
-  reducers, //Todos los reducers
-  {}, //Estado inicial
-  applyMiddleware(reduxThong)
-);
+const store = configureStore(
+  {
+    reducer: {
+      usuariosReducer,
+      publicacionesReducer,
+      tareasReducer,
+    }
+  }
+)
 
-ReactDOM.render(
+const container = document.getElementById('root');
+createRoot(container).render(
   <Provider store={store}>
     <App />
-  </Provider>,
-  document.getElementById("root")
+  </Provider>
 );

@@ -1,11 +1,13 @@
 import React from "react";
-import { connect } from "react-redux";
 import Spinner from "../General/Spinner";
 import Fatal from "../General/Fatal";
+import { useSelector } from 'react-redux';
 
 const Comentarios = (props) => {
-  if (props.com_error) return <Fatal mensaje={props.com_error} />;
-  if (props.com_cargando && !props.comentarios.length) return <Spinner />;
+  const error = useSelector(state => state.publicacionesReducer.com_error);
+  const cargando = useSelector(state => state.publicacionesReducer.com_cargando);
+  if (error) return <Fatal mensaje={error} />;
+  if (cargando && !props.comentarios.length) return <Spinner />;
   const ponerComentarios = () =>
     props.comentarios.map((comentario) => (
       <li key={comentario.id}>
@@ -19,6 +21,4 @@ const Comentarios = (props) => {
   return <ul>{ponerComentarios()}</ul>;
 };
 
-const mapStateToProps = ({ publicacionesReducer }) => publicacionesReducer;
-
-export default connect(mapStateToProps)(Comentarios);
+export default Comentarios;

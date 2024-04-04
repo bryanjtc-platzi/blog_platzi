@@ -1,53 +1,34 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import * as usuariosActions from "../../actions/usuariosActions";
+import React, { useEffect } from "react";
+import {  useSelector } from "react-redux";
 import Spinner from "../General/Spinner";
 import Fatal from "../General/Fatal";
 import Tabla from "./Tabla";
+import { useTraerTodos } from "../../hooks/usuariosHooks";
 
-class Usuarios extends Component {
-  constructor() {
-    super();
-    this.state = {
-      usuarios: [
-        {
-          nombre: "Rodolfo",
-          correo: "rodolfo@saldivar.com",
-          enlace: "rodolfo.com",
-        },
-        {
-          nombre: "Platzi",
-          correo: "platzi@platzi.com",
-          enlace: "platzi.com",
-        },
-      ],
-    };
-  }
-  componentDidMount() {
-    if (!this.props.usuarios.length) this.props.traerTodos();
-  }
+const Usuarios = (props) => {
+  const { usuarios, cargando, error } = useSelector(state => state.usuariosReducer);
+  const traerTodos = useTraerTodos();
 
-  ponerContenido = () => {
-    if (this.props.cargando) {
+  useEffect(() => {
+    if (!usuarios.length) traerTodos();
+  }, [usuarios, traerTodos]);
+
+  const ponerContenido = () => {
+    if (cargando) {
       return <Spinner />;
     }
-    if (this.props.error) {
-      return <Fatal mensaje={this.props.error} />;
+    if (error) {
+      return <Fatal mensaje={error} />;
     }
     return <Tabla />;
   };
 
-  render() {
-    return (
-      <div>
-        <h1>Usuarios</h1>
-        {this.ponerContenido()}
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (reducers) => {
-  return reducers.usuariosReducer;
+  return (
+    <div>
+      <h1>Usuarios</h1>
+      {ponerContenido()}
+    </div>
+  );
 };
-export default connect(mapStateToProps, usuariosActions)(Usuarios);
+
+export default Usuarios;

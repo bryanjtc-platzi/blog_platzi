@@ -1,10 +1,11 @@
 import React from "react";
-import { connect } from "react-redux";
-import {Link} from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-const Tabla = (props) => {
+const Tabla = () => {
+  const { usuarios } = useSelector(state => state.usuariosReducer);
   const ponerfilas = () =>
-    props.usuarios.map((usuario, key) => (
+    usuarios.map((usuario, key) => (
       <tr key={usuario.id}>
         <td>{usuario.name}</td>
         <td>{usuario.email}</td>
@@ -30,8 +31,4 @@ const Tabla = (props) => {
   );
 };
 
-const mapStateToProps = (reducers) => {
-  return reducers.usuariosReducer;
-};
-
-export default connect(mapStateToProps)(Tabla);
+export default Tabla;

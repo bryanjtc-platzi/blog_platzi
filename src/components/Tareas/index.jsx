@@ -1,33 +1,32 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import * as tareasActions from "../../actions/tareasActions";
 import Spinner from "../General/Spinner";
 import Fatal from "../General/Fatal";
+import { useSelector } from 'react-redux';
+import { useTraerTodas, useCambioCheck, useEliminar } from "../../hooks/tareasHooks";
 
-class Tareas extends Component {
-  componentDidMount() {
-    if (!Object.keys(this.props.tareas).length) this.props.traerTodas();
-  }
+const Tareas = () => {
+  const { tareas, error, cargando } = useSelector(state => state.tareasReducer);
+  const traerTodas = useTraerTodas();
+  const cambioCheck = useCambioCheck();
+  const eliminar = useEliminar();
 
-  componentDidUpdate() {
-    const { tareas, cargando, traerTodas } = this.props;
-    if (!Object.keys(tareas).length && !cargando) traerTodas();
-  }
-  mostrarContenido = () => {
-    const { tareas, cargando, error } = this.props;
+  useEffect(() => {
+    if (!Object.keys(tareas).length) traerTodas();
+  }, [tareas, traerTodas]);
+
+  const mostrarContenido = () => {
     if (cargando) return <Spinner />;
     if (error) return <Fatal mensaje={error} />;
     return Object.keys(tareas).map((usu_id) => (
       <div key={usu_id}>
         <h2>Usuario {usu_id}</h2>
-        <div className="contenedor-tareas">{this.ponerTareas(usu_id)}</div>
+        <div className="contenedor-tareas">{ponerTareas(usu_id)}</div>
       </div>
     ));
   };
 
-  ponerTareas = (usu_id) => {
-    const { tareas, cambioCheck, eliminar } = this.props;
+  const ponerTareas = (usu_id) => {
     const por_usuario = {
       ...tareas[usu_id],
     };
@@ -48,17 +47,15 @@ class Tareas extends Component {
       </div>
     ));
   };
-  render() {
-    return (
-      <div>
-        <button>
-          <Link to="/tareas/guardar">Agregar</Link>
-        </button>
-        {this.mostrarContenido()}
-      </div>
-    );
-  }
-}
 
-const mapStateToProps = ({ tareasReducer }) => tareasReducer;
-export default connect(mapStateToProps, tareasActions)(Tareas);
+  return (
+    <div>
+      <button>
+        <Link to="/tareas/guardar">Agregar</Link>
+      </button>
+      {mostrarContenido()}
+    </div>
+  );
+};
+
+export default Tareas;
